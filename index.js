@@ -14,21 +14,32 @@ connectDB(); // Connect to the database
 const app = express();
 const server = http.createServer(app);
 
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+const allowedOrigins = [
+  "http://localhost:3000",                // local dev
+  "https://campusconnect.vercel.app",     // production
+];
 
 const io = socketio(server, {
   cors: {
-    origin: CLIENT_URL,
+    origin: allowedOrigins,
     credentials: true,
   },
 });
 //middleware
 app.use(
   cors({
-    origin: CLIENT_URL, // ✅ frontend URL
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
-); // Allow cross-origin requests
+);// Allow cross-origin requests
+
+
 app.use(express.json()); // Parse JSON bodies
 
 const cookieParser = require("cookie-parser");
