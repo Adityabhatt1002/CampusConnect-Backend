@@ -16,7 +16,7 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   "http://localhost:3000",                // local dev
-  "https://campusconnect.vercel.app",     // production
+  "https://campusconnectitis.vercel.app",     // production
 ];
 
 const io = socketio(server, {
