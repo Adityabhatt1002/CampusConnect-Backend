@@ -19,10 +19,18 @@ const allowedOrigins = [
   "https://campusconnectitis.vercel.app",     // production
 ];
 
+// Socket.io CORS Fix
 const io = socketio(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by Socket.io CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
 //middleware
